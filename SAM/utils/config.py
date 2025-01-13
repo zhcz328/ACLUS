@@ -70,7 +70,7 @@ class Config_BUSI:
     visual_result_path = "./example_of_required_dataset_format/US30K/"
     # This dataset is for breast cancer segmentation
     data_path = "../../dataset"
-    data_subpath = "../../dataset/Breast-BUSI/"
+    data_subpath = "../../dataset/ThyroidNodule-DDTI/"
     save_path = "./checkpoints/BUSI/"
     result_path = "./result/BUSI/"
     tensorboard_path = "./tensorboard/BUSI/"
@@ -84,9 +84,9 @@ class Config_BUSI:
     momentum = 0.9                      # momntum
     classes = 2                         # thenumber of classes (background + foreground)
     img_size = 256                      # theinput size of model
-    train_split = "train-Breast-BUSI"   # the file name of training set
-    val_split = "val-Breast-BUSI"       # the file name of testing set
-    test_split = "test-Breast-BUSI"     # the file name of testing set
+    train_split = "train-ThyroidNodule-DDTI"   # the file name of training set
+    val_split = "val-ThyroidNodule-DDTI"       # the file name of testing set
+    test_split = "test-ThyroidNodule-DDTI"     # the file name of testing set
     crop = None                         # the cropped image size
     eval_freq = 1                       # the frequency of evaluate the model
     save_freq = 2000                    # the frequency of saving the model

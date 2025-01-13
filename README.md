@@ -1,10 +1,15 @@
+```
+
+```
+
 # ACLUS: A SAM-Guided Efficient Anatomy-Level Self-Supervised Pre-Training Method for Ultrasound Medical Image Analysis
 
 ## Abstract
 
-**As artificial intelligence advances in the field of medical ultrasound image analysis, the need for effective pre-training methods to enhance diagnostic accuracy and efficiency becomes increasingly critical. Distinguished from existing ultrasound pre-training methods that are either region-based or focus solely on entire images or video frames, we propose Anatomy-level Contrastive Learning for Ultrasound Images (ACLUS), a simple yet effective approach specifically tailored to target the anatomical structures most critical in medical analysis. In our approach, we first integrate an auto prompter into the Segment Anything Model (SAM) to achieve ultrasound image segmentation without manual intervention by leveraging existing Image-Mask pairs for fine-tuning. Subsequently, ACLUS employs the auto-prompting capability to perform segmentation and conducts cross-view contrastive learning on anatomical structures. This enables the model to focus on anatomy-level invariant representations, effectively distinguishing different target structures, thereby improving the robustness of the learned representations. To achieve fine-grained representation learning, we incorporate anatomy-level regional contrast across different scales between multiple layers of the backbone, ensuring better capture of anatomical details. We conducted extensive experiments on ultrasound medical datasets across various downstream tasks. The experimental results demonstrated that the ACLUS method enhanced the quality of pre-training in the ultrasound domain and outperformed existing state-of-the-art methods.**
+**The demand for efficient pre-training techniques to improve diagnostic efficiency and accuracy has grown as artificial intelligence in medical ultrasound (US) image analysis continues to progress. Prior pre-training methods for US images are either region-based or only concentrate on full images or video frames, rather than optimizing for the US and comparing in more detail. In this study, we provide Anatomy-level Contrastive Learning for Ultrasound Images (ACLUS), a simple yet powerful method that focusses on the anatomical features that are most essential for medical interpretation. A-SAM, a Segment Anything Model (SAM) adaptation with an auto-prompting mechanism, is the foundation of our methodology. In order to align with the ultrasound domain, A-SAM is adjusted using pre-existing image-mask pairs. This allows for accurate and automated segmentation without the need for human intervention. Building on this capability, ACLUS performs cross-view contrastive learning at the anatomical level, focusing on inter-anatomy relationships. Furthermore, considering the boundaries of ultrasound image irrelevance, ACLUS integrates context prediction within the damaged core region, interplaying with anatomy-level contrast to capture fine-grained anatomical details. By facilitating efficient representation learning across multiple semantic scales, this approach ensures robust feature extraction tailored to ultrasound-specific characteristics. Experimental results on diverse ultrasound medical datasets across various downstream tasks demonstrate that ACLUS significantly improves the quality of pre-training in the ultrasound domain and consistently outperforms existing state-of-the-art methods. The source code is available at https://github.com/zhcz328/ACLUS.**
 
 ![ACLUS](./figs/ACLUS.png)
+
 ## 🔨 PostScript
 
 😄 This project is the pytorch implemention of ACLUS
@@ -15,17 +20,20 @@
 
 1. Clone or download this repository.
 
-    ```
+   ```
    cd <ACLUS_project_dir>
    ```
 
 2. Create conda environment.
-    ```
+
+   ```
    conda create -n ACLUS python=3.9
    conda activatee ACLUS
    ```
+
 3. Install dependencies.
-    ```
+
+   ```
    pip install -r requirements.txt
    ```
 
@@ -44,13 +52,18 @@
 ## 📘 Finetune SAM on US30K
 
 ### Checkpoint
+
 Download checkpoint for SAM (Segment Anything Model): [ViT_b](https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth)
+
 ### Dataset
-1. Download US30k dataset, including [TN3K]( https://github.com/haifangong/TRFE-Net-for-thyroid-nodule-segmentation), [DDTI]( https://github.com/haifangong/TRFE-Net-for-thyroid-nodule-segmentation), [TG3K](https://github.com/haifangong/TRFE-Net-for-thyroid-nodule-segmentation), [BUSI](https://scholar.cu.edu.eg/?q=afahmy/pages/dataset), [UDIAT](http://www2.docm.mmu.ac.uk/STAFF/M.Yap/dataset.php), [CAMUS](http://camus.creatis.insa-lyon.fr/challenge/), and [HMC-QU](https://aistudio.baidu.com/aistudio/datasetdetail/102406), and convert these datasets into `.png` format.
+
+1. Download datasets, including [DDTI]( https://github.com/haifangong/TRFE-Net-for-thyroid-nodule-segmentation), [TG3K](https://github.com/haifangong/TRFE-Net-for-thyroid-nodule-segmentation), [CAMUS](http://camus.creatis.insa-lyon.fr/challenge/) , and then convert these datasets into `.png` format.
+
 2. Then these datasets should be set in the format of `./SAM/dataset/US30K` folder.
+
    ```none
-   US30K
-   ├── Brest-BUSI
+   dataset
+   ├── ThyroidGland-DDTI
    │   ├── img
    │   │   ├── xxx.png
    │   │   ├── ... 
@@ -67,55 +80,66 @@ Download checkpoint for SAM (Segment Anything Model): [ViT_b](https://dl.fbaipub
    .........
    │── MainPatient
    ```
+
 3. The `./SAM/MainPatient` folder contains the train/val.txt which has formatted line as:
+
    ```
      <class ID>/<dataset file folder name>/<image file name>
    ```
+
 4. Set other configs in `./SAM/utils/config.py`.
 
 ### Finetune 
 
 1. Finetune the SAM for the ultrasound domain with：
+
    ```
    python ./SAM/only_train_sam.py --sam_ckpt <sam_vit_b.pth> 
    ```
+
 2. Finetune auto prompter with：
+
    ```
    python ./SAM/train_auto_prompter.py --sam_ckpt <finetuned_sam.pth> --load_auto_prompter
    ```
 
 ## 🐾 ACLUS Pre-training
 
-1. Download dataset from [Butterfly](https://drive.google.com/file/d/1zefZInevopumI-VdX6r7Bj-6pj_WILrr/view?usp=sharing) and [CAMUS](http://camus.creatis.insa-lyon.fr/challenge/), and put them in the formatted directory as below:
-   ```
-   dataset
-   ├── train
-   │   ├──Butterfly
-   │   │   ├──img
-   │   │   ├──label
-   │   ├──CAMUS
-   │   │   ├──img
-   │   │   ├──label
-   ```
+1. > Download the datasets from [Butterfly](https://drive.google.com/file/d/1zefZInevopumI-VdX6r7Bj-6pj_WILrr/view?usp=sharing) and [HMC-QU](https://aistudio.baidu.com/aistudio/datasetdetail/102406) and place them in a formatted directory after generating masks through A-SAM inference as shown below:
+   >
+   > ```
+   > dataset
+   > ├── train
+   > │   ├──Butterfly
+   > │   │   ├──img
+   > │   │   ├──label
+   > │   ├──HMC-QU
+   > │   │   ├──img
+   > │   │   ├──label
+   > ```
+
 2. Run the `./utils/generate_masks_pkls.py` to generate masks .pkl files in './dataset/masks' 
    and indexes at `./dataset/train_tf_img_to_gt.pkl`.
+
    ```
    dataset
    ├── train
    │   ├──Butterfly
    │   │   ├──img
    │   │   ├──label
-   │   ├──CAMUS
+   │   ├──HMC-QU
    │   │   ├──img
    │   │   ├──label
    │── masks
    │   ├──xxx.pkl
    │── train_tf_img_to_gt.pkl
    ```
+
 3. Set training options in config file: `./configs/example.yaml`, and the `resume_path` is need to be assigned 
-to the checkpoint file you want to resume training. 
+   to the checkpoint file you want to resume training. 
 
 4. Train the ACLUS model with:
+
    ```
    python -m torch.distributed.launch --nproc_per_node 2 --master_port 12345 pretrain_aclus.py --cfg ./configs/example.yaml
    ```
