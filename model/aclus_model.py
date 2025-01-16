@@ -59,14 +59,14 @@ class AppearanceTransform2D:
             return x
         img = x.clone()
         _, img_rows, img_cols = img.shape
-        block_size = max(5, img_rows // 20)  # 动态调整块大小
-        num_block = (img_rows * img_cols) // (block_size ** 2)  # 根据图像大小调整块数量
+        block_size = max(5, img_rows // 20)  # Dynamically resize blocks
+        num_block = (img_rows * img_cols) // (block_size ** 2)  # Adjust the number of blocks based on the size of the image
 
         for _ in range(num_block):
             x1 = torch.randint(0, img_rows - block_size + 1, (1,)).item()
             y1 = torch.randint(0, img_cols - block_size + 1, (1,)).item()
             block = img[:, x1:x1 + block_size, y1:y1 + block_size]
-            for c in range(block.size(0)):  # 独立打乱每个通道
+            for c in range(block.size(0)):  # Scramble each channel independently
                 channel_block = block[c].clone().view(-1)
                 channel_block = channel_block[torch.randperm(channel_block.size(0))].view(block_size, block_size)
                 block[c] = channel_block
