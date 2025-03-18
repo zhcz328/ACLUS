@@ -49,7 +49,7 @@
    python ./evaluation_aclus.py --data_path <pocus_data_path> --ckpt_path <pre_trained_aclus_path>
    ```
 
-## 📘 Finetune SAM on US30K
+## 📘 Finetune SAM
 
 ### Checkpoint
 
@@ -59,7 +59,7 @@ Download checkpoint for SAM (Segment Anything Model): [ViT_b](https://dl.fbaipub
 
 1. Download datasets, including [DDTI]( https://github.com/haifangong/TRFE-Net-for-thyroid-nodule-segmentation), [TG3K](https://github.com/haifangong/TRFE-Net-for-thyroid-nodule-segmentation), [CAMUS](http://camus.creatis.insa-lyon.fr/challenge/) , and then convert these datasets into `.png` format.
 
-2. Then these datasets should be set in the format of `./SAM/dataset/US30K` folder.
+2. Then these datasets should be set in the format of `./SAM/dataset/` folder.
 
    ```none
    dataset
